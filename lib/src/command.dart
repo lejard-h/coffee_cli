@@ -4,25 +4,22 @@ import "cli.dart";
 import "parameter.dart";
 import "exception.dart";
 
-class CoffeeCommand {
+typedef int executeCommand(Map<String, CoffeeParameter> parameters);
+
+class CoffeeCommand extends CoffeeCli {
   final String name;
   final String description;
-  final executeCommand command;
+  final executeCommand executable;
   final List<CoffeeParameter> parameters;
-  final List<CoffeeCommand> subcommands;
-  ArgParser parser;
 
-  CoffeeCommand(this.name, this.command,
-      {this.parameters: const [], this.description: "", this.subcommands: const []}) {
-    if (command == null && subcommands?.isEmpty) {
+  CoffeeCommand(this.name, this.executable,
+      {this.parameters: const [], this.description: "", List<CoffeeCommand> commands: const []})
+      : super(commands) {
+    if (executable == null && (commands == null || commands.isEmpty)) {
       throw new CoffeeException("command need to be defined.");
     }
-    parser = new ArgParser();
     for (CoffeeParameter param in parameters) {
       parser.addOption(param.name, help: param.description);
-    }
-    for (CoffeeCommand cmd in subcommands) {
-      parser.addCommand(cmd.name, cmd.parser);
     }
   }
 
@@ -34,7 +31,7 @@ class CoffeeCommand {
     } else if (value.isEmpty && parameter.isOptional) {
       value = parameter.defaultValue;
     }
-    if (parameter.possibleValues != null && !parameter.possibleValues.contains(value)) {
+    if (parameter.allowed != null && !parameter.allowed.contains(value)) {
       stderr.writeln(outputRed("Error: Invalid value '$value' for '${parameter.name}' parameter."));
       return null;
     }
@@ -51,42 +48,50 @@ class CoffeeCommand {
   }
 
   printUsage() {
-    print("$name usage: ");
-    for (CoffeeCommand cmd in subcommands) {
-      stdout.write("\t${cmd.name} ");
-      print("\t${cmd.parser.usage.split("\n").join("\n\t\t")}");
+    stdout.write("\t${outputBlue(name)}");
+    print("\t\t${parser.usage.split("\n").join("\n\t\t\t")}");
+  }
+
+  printUsageSubCommands() {
+    stdout.write("${outputBlue(name)}");
+    print("\t${parser.usage.split("\n").join("\n\t")}");
+     for (CoffeeCommand cmd in commands) {
+       stdout.write("\t${outputBlue(cmd.name)}");
+       print("\t${cmd.parser.usage.split("\n").join("\n\t\t")}");
     }
   }
 
   List<String> proposeSubCommands(List<String> args) {
-      String value;
-      List<String> available = subcommands.map((CoffeeCommand cmd) => cmd.name);
-      while (value == null) {
-          stdout.write(outputGreen("Available commands (${available.join(', ')}) : "));
-          value = stdin.readLineSync();
-          value = value.split("\n")[0];
-          if (!available.contains(value)) {
-              stderr.writeln(outputRed("Error: Invalid command '$value'."));
-              value = null;
-          }
+    String value;
+    List<String> available = commands.map((CoffeeCommand cmd) => cmd.name);
+    while (value == null) {
+      stdout.write(outputGreen("Available commands (${available.join(', ')}) : "));
+      value = stdin.readLineSync();
+      value = value.split("\n")[0];
+      if (!available.contains(value)) {
+        stderr.writeln(outputRed("Error: Invalid command '$value'."));
+        value = null;
       }
-
-      return [value]..addAll(args);
+    }
+    return [value]..addAll(args);
   }
 
-  execute(List<String> args) {
+  int execute(List<String> args) {
     try {
       ArgResults results = parser.parse(args);
       if (results.command != null) {
         CoffeeCommand cmd =
-            subcommands.firstWhere((CoffeeCommand _) => _.name == results.command.name, orElse: () => null);
+            commands.firstWhere((CoffeeCommand _) => _.name == results.command.name, orElse: () => null);
         if (cmd == null) {
           printUsage();
         }
-        cmd.execute(results.command.arguments);
-      } else if (command == null && subcommands.isNotEmpty) {
-         execute(proposeSubCommands(args));
-      } else if (command != null) {
+        return cmd.execute(results.command.arguments);
+      } else if (results["help"]) {
+        printUsageSubCommands();
+      } else if (executable == null && commands.isNotEmpty) {
+        print("proposeSubCommand");
+        return execute(proposeSubCommands(args));
+      } else if (executable != null) {
         Map<String, CoffeeParameter> params = {};
         for (CoffeeParameter param in parameters) {
           if (results.wasParsed(param.name)) {
@@ -97,10 +102,14 @@ class CoffeeCommand {
           }
           params[param.name] = param;
         }
-        command(params);
+        return executable(params);
       }
     } on FormatException catch (_) {
-      print(parser.usage);
+      //printUsage();
+    } catch (_, stacktrace) {
+      print(_);
+      print(stacktrace);
     }
+    return 1;
   }
 }

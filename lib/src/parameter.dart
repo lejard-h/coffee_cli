@@ -9,7 +9,7 @@ class CoffeeParameter {
   final bool isOptional;
   final Type type;
   final String question;
-  final List<dynamic> possibleValues;
+  final List<dynamic> allowed;
 
   dynamic _defaultValue;
   dynamic get defaultValue => _defaultValue;
@@ -38,7 +38,7 @@ class CoffeeParameter {
   }
 
   CoffeeParameter(this.name, this.type,
-      {this.isOptional: false, this.question, dynamic defaultValue, this.description: "", this.possibleValues: null})
+      {this.isOptional: false, this.question, dynamic defaultValue, this.description: "", this.allowed: null})
       : _defaultValue = defaultValue {
     if (type == null || !_parameters_type.contains(type)) {
       throw new CoffeeException("$type in CoffeeParameter is not supported.");
@@ -56,8 +56,8 @@ class CoffeeParameter {
   String getQuestion() {
     String _question = question ?? name;
     if (type != bool) {
-      if (possibleValues != null) {
-        return "${outputGreen(_question)} (${outputWhite(possibleValues.join(", "))}) : ";
+      if (allowed != null) {
+        return "${outputGreen(_question)} (${outputWhite(allowed.join(", "))}) : ";
       } else if (defaultValue != null) {
         return "${outputGreen(_question)} (${outputWhite(defaultValue)}) : ";
       }
@@ -76,9 +76,9 @@ class CoffeeStringParameter extends CoffeeParameter {
       String question,
       dynamic defaultValue,
       String help: "",
-      List<dynamic> possibleValues})
+      List<dynamic> allowed})
       : super(name, String,
-            isOptional: isOptional, question: question, defaultValue: defaultValue, possibleValues: possibleValues, description: help);
+            isOptional: isOptional, question: question, defaultValue: defaultValue, allowed: allowed, description: help);
 }
 
 class CoffeeBoolParameter extends CoffeeParameter {
@@ -87,7 +87,7 @@ class CoffeeBoolParameter extends CoffeeParameter {
       String question,
       dynamic defaultValue,
       String help: "",
-      List<dynamic> possibleValues})
+      List<dynamic> allowed})
       : super(name, bool, isOptional: isOptional, question: question, defaultValue: defaultValue, description: help);
 }
 
@@ -97,7 +97,7 @@ class CoffeeNumberParameter extends CoffeeParameter {
       String question,
       dynamic defaultValue,
       String help: "",
-      List<dynamic> possibleValues})
+      List<dynamic> allowed})
       : super(name, num,
-            isOptional: isOptional, question: question, defaultValue: defaultValue, possibleValues: possibleValues, description: help);
+            isOptional: isOptional, question: question, defaultValue: defaultValue, allowed: allowed, description: help);
 }
