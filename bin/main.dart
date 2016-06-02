@@ -27,16 +27,17 @@ void helloworld(Map<String, CoffeeParameter> params) {
 
 main(List<String> args) {
   CoffeeCli cli = new CoffeeCli("My Cli", [
-    new CoffeeCommand("hello", helloworld, parameters: [
-      new CoffeeStringParameter("name",
-          isOptional: false, help: "Use you name", question: "What is your Name ?"),
-      new CoffeeBoolParameter("uppercase",
-          isOptional: false, help: "Big Hello World", question: "Do you want to use uppercase ?"),
-      new CoffeeStringParameter("style",
-          isOptional: true,
-          help: "Style",
-          question: "What kind of style ?",
-          possibleValues: ["CamelCase", "snake_case"])
+    new CoffeeCommand("hello", helloworld, subcommands: [
+      new CoffeeCommand("world", helloworld, parameters: [
+        new CoffeeStringParameter("name", isOptional: false, help: "Use you name", question: "What is your Name ?"),
+        new CoffeeBoolParameter("uppercase",
+            isOptional: false, help: "Big Hello World", question: "Do you want to use uppercase ?"),
+        new CoffeeStringParameter("style",
+            isOptional: true,
+            help: "Style",
+            question: "What kind of style ?",
+            possibleValues: ["CamelCase", "snake_case"])
+      ])
     ])
   ]);
 
