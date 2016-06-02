@@ -75,10 +75,10 @@ class CoffeeStringParameter extends CoffeeParameter {
       {bool isOptional: false,
       String question,
       dynamic defaultValue,
-      String description: "",
+      String help: "",
       List<dynamic> possibleValues})
       : super(name, String,
-            isOptional: isOptional, question: question, description: defaultValue, possibleValues: possibleValues);
+            isOptional: isOptional, question: question, defaultValue: defaultValue, possibleValues: possibleValues, description: help);
 }
 
 class CoffeeBoolParameter extends CoffeeParameter {
@@ -86,9 +86,9 @@ class CoffeeBoolParameter extends CoffeeParameter {
       {bool isOptional: false,
       String question,
       dynamic defaultValue,
-      String description: "",
+      String help: "",
       List<dynamic> possibleValues})
-      : super(name, bool, isOptional: isOptional, question: question, description: defaultValue);
+      : super(name, bool, isOptional: isOptional, question: question, defaultValue: defaultValue, description: help);
 }
 
 class CoffeeNumberParameter extends CoffeeParameter {
@@ -96,8 +96,8 @@ class CoffeeNumberParameter extends CoffeeParameter {
       {bool isOptional: false,
       String question,
       dynamic defaultValue,
-      String description: "",
+      String help: "",
       List<dynamic> possibleValues})
       : super(name, num,
-            isOptional: isOptional, question: question, description: defaultValue, possibleValues: possibleValues);
+            isOptional: isOptional, question: question, defaultValue: defaultValue, possibleValues: possibleValues, description: help);
 }

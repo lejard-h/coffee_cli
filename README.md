@@ -33,12 +33,12 @@ main(List<String> args) {
   CoffeeCli cli = new CoffeeCli("My Cli", [
     new CoffeeCommand("hello", helloworld, parameters: [
       new CoffeeStringParameter("name",
-          isOptional: false, description: "Use you name", question: "What is your Name ?"),
+          isOptional: false, help: "Use you name", question: "What is your Name ?"),
       new CoffeeBoolParameter("uppercase",
-          isOptional: false, description: "Big Hello World", question: "Do you want to use uppercase ?"),
+          isOptional: false, help: "Big Hello World", question: "Do you want to use uppercase ?"),
       new CoffeeStringParameter("style",
           isOptional: true,
-          description: "Style",
+          help: "Style",
           question: "What kind of style ?",
           possibleValues: ["CamelCase", "snake_case"])
     ])
@@ -46,4 +46,5 @@ main(List<String> args) {
 
   return cli.execute(args);
 }
+
 ```

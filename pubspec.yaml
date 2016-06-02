@@ -1,5 +1,5 @@
 name: coffee_cli
-version: 0.1.0
+version: 0.1.1
 description: Easy way to create interactive command line application.
 author: Hadrien Lejard <hadrien.lejard@gmail.com>
 homepage: https://github.com/lejard-h/coffee_cli
