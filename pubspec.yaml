@@ -1,15 +1,15 @@
 name: coffee_cli
-version: 0.0.1
-description: A sample command-line application.
+version: 0.1.0
+description: Easy way to create interactive command line application.
 author: Hadrien Lejard <hadrien.lejard@gmail.com>
-homepage: https://www.example.com
+homepage: https://github.com/lejard-h/coffee_cli
 
 environment:
   sdk: '>=1.0.0 <2.0.0'
 
 dependencies:
-  args: any
-  ansicolor: any
+  args: "^0.13.4+2"
+  ansicolor: "^0.0.9"
 
 dev_dependencies:
   test: '>=0.12.0 <0.13.0'

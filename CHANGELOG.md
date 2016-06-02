@@ -1,5 +1,5 @@
 # Changelog
 
-## 0.0.1
+## 0.1.0
 
-- Initial version, created by Stagehand
+Easy way to create interactive command line application
