@@ -28,9 +28,8 @@ void helloworld(Map<String, CoffeeParameter> params) {
 CoffeeCommand get helloCommand => new  CoffeeCommand("hello", helloworld);
 CoffeeCommand get helloWorldCommand =>  new CoffeeCommand("world", helloworld, parameters: [
   new CoffeeStringParameter("name",  help: "Use you name", question: "What is your Name ?"),
-  new CoffeeBoolParameter("uppercase", help: "Big Hello World", question: "Do you want to use uppercase ?"),
+  new CoffeeBoolParameter("uppercase", help: "Big Hello World", question: "Do you want to use uppercase ?", defaultValue: false),
   new CoffeeStringParameter("style",
-      isOptional: true,
       help: "Style",
       question: "What kind of style ?",
       allowed: ["CamelCase", "snake_case"])

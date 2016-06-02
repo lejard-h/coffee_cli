@@ -22,10 +22,14 @@ class CoffeeParameter {
         _value = num.parse(val);
         return;
       } else if (type == bool) {
-        if (val.toLowerCase() == "y" || val.toLowerCase() == "true") {
-          _value = true;
-        } else if (val.toLowerCase() == "n" || val.toLowerCase() == "false") {
-          _value = false;
+        if (val is String) {
+          if (val.toLowerCase() == "y" || val.toLowerCase() == "true") {
+            _value = true;
+          } else if (val.toLowerCase() == "n" || val.toLowerCase() == "false") {
+            _value = false;
+          }
+        } else if (val is bool) {
+          _value = val;
         }
         return;
       } else {

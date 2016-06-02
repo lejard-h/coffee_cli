@@ -19,7 +19,11 @@ class CoffeeCommand extends CoffeeCli {
       throw new CoffeeException("command need to be defined.");
     }
     for (CoffeeParameter param in parameters) {
-      parser.addOption(param.name, help: param.description);
+      if (param.type != bool) {
+        parser.addOption(param.name, help: param.description);
+      } else {
+        parser.addFlag(param.name, negatable: true, help: param.description);
+      }
     }
   }
 
@@ -55,9 +59,9 @@ class CoffeeCommand extends CoffeeCli {
   printUsageSubCommands() {
     stdout.write("${outputBlue(name)}");
     print("\t${parser.usage.split("\n").join("\n\t")}");
-     for (CoffeeCommand cmd in commands) {
-       stdout.write("\t${outputBlue(cmd.name)}");
-       print("\t${cmd.parser.usage.split("\n").join("\n\t\t")}");
+    for (CoffeeCommand cmd in commands) {
+      stdout.write("\t${outputBlue(cmd.name)}");
+      print("\t${cmd.parser.usage.split("\n").join("\n\t\t")}");
     }
   }
 
@@ -95,7 +99,11 @@ class CoffeeCommand extends CoffeeCli {
         Map<String, CoffeeParameter> params = {};
         for (CoffeeParameter param in parameters) {
           if (results.wasParsed(param.name)) {
-            param.value = _parseValue(results[param.name], param);
+            if (param.type == bool) {
+              param.value = results[param.name];
+            } else {
+              param.value = _parseValue(results[param.name], param);
+            }
           }
           if (param.value == null && !param.isOptional) {
             ask(param);

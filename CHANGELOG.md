@@ -2,14 +2,17 @@
 
 ## 0.2.0
 
-* Can add CoffeeCommand as subcommand of an other CoffeeCommand
-* Better usage
-
 ###Breaking Change
-- `possibleValues` in `CoffeeParameter` change by `allowed`
+- `CoffeeParameter` 
+    - `possibleValues` in `CoffeeParameter` change by `allowed`
+    - `bool` parameter are no define as a flag
 - `CoffeeCommand`
     - `command` rename by `executable`
     - `subcommands` rename by `commands`
+ 
+    
+* Can add CoffeeCommand as subcommand of an other CoffeeCommand
+* Better usage
 
 ## 0.1.1
 
