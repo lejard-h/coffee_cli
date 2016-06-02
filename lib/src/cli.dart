@@ -23,6 +23,10 @@ String outputBlue(String msg, {bool bold}) {
   return pen(msg);
 }
 
+String outputGray(String msg, {level: 1.0}) {
+  AnsiPen pen = new AnsiPen()..gray(level:level);
+  return pen(msg);
+}
 
 
 class CoffeeCli {

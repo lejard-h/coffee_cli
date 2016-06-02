@@ -3,7 +3,7 @@
 
 import 'package:coffee_cli/coffee_cli.dart';
 
-void helloworld(Map<String, CoffeeParameter> params) {
+int helloworld(Map<String, CoffeeParameter> params) {
   String hello;
   if (params.containsKey("name")) {
     hello = "Hello ${params["name"].value} !";
@@ -23,10 +23,10 @@ void helloworld(Map<String, CoffeeParameter> params) {
   } else {
     print(hello);
   }
+  return 0;
 }
 
-CoffeeCommand get helloCommand => new  CoffeeCommand("hello", helloworld);
-CoffeeCommand get helloWorldCommand =>  new CoffeeCommand("world", helloworld, parameters: [
+CoffeeCommand get helloCommandWho => new CoffeeCommand("who", helloworld, parameters: [
   new CoffeeStringParameter("name",  help: "Use you name", question: "What is your Name ?"),
   new CoffeeBoolParameter("uppercase", help: "Big Hello World", question: "Do you want to use uppercase ?", defaultValue: false),
   new CoffeeStringParameter("style",
@@ -34,8 +34,15 @@ CoffeeCommand get helloWorldCommand =>  new CoffeeCommand("world", helloworld, p
       question: "What kind of style ?",
       allowed: ["CamelCase", "snake_case"])
 ]);
-CoffeeCommand get helloCommandComplex => new CoffeeCommand("complex", helloworld, commands: [ helloWorldCommand]);
+
+CoffeeCommand get helloWorldCommand =>  new CoffeeCommand("world", helloworld);
+
+
+CoffeeCommand get helloCommand => new  CoffeeCommand("hello", null, commands: [
+  helloWorldCommand,
+  helloCommandWho
+]);
 
 main(List<String> args) {
-  return new CoffeeCli([ helloCommand, helloCommandComplex, helloWorldCommand]).execute(args);
+  return new CoffeeCli([ helloCommand]).execute(args);
 }

@@ -69,10 +69,16 @@ class CoffeeCommand extends CoffeeCli {
     String value;
     List<String> available = commands.map((CoffeeCommand cmd) => cmd.name);
     while (value == null) {
-      stdout.write(outputGreen("Available commands (${available.join(', ')}) : "));
+      stdout.writeln(outputGray("Available commands", level: 0.5));
+      for (String cmd in available) {
+        stdout.writeln("${outputGray(" > ", level: 0.5)}${outputBlue(cmd)}");
+      }
       value = stdin.readLineSync();
       value = value.split("\n")[0];
-      if (!available.contains(value)) {
+      if (value.isEmpty) {
+        stderr.writeln(outputRed("Error: Please choose a command."));
+        value = null;
+      } else if (!available.contains(value)) {
         stderr.writeln(outputRed("Error: Invalid command '$value'."));
         value = null;
       }
@@ -93,7 +99,6 @@ class CoffeeCommand extends CoffeeCli {
       } else if (results["help"]) {
         printUsageSubCommands();
       } else if (executable == null && commands.isNotEmpty) {
-        print("proposeSubCommand");
         return execute(proposeSubCommands(args));
       } else if (executable != null) {
         Map<String, CoffeeParameter> params = {};
