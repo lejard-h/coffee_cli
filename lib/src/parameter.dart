@@ -3,11 +3,11 @@ import "exception.dart";
 
 const List<Type> _parameters_type = const [num, String, bool];
 
-class CoffeeParameter {
-  final String description;
+class CoffeeParameter<T> {
+  final String help;
   final String name;
   final bool isOptional;
-  final Type type;
+  Type get type => T;
   final String question;
   final List<dynamic> allowed;
 
@@ -41,8 +41,8 @@ class CoffeeParameter {
     _value = val;
   }
 
-  CoffeeParameter(this.name, this.type,
-      {this.isOptional: false, this.question, dynamic defaultValue, this.description: "", this.allowed: null})
+  CoffeeParameter(this.name,
+      {this.isOptional: false, this.question, dynamic defaultValue, this.help: "", this.allowed: null})
       : _defaultValue = defaultValue {
     if (type == null || !_parameters_type.contains(type)) {
       throw new CoffeeException("$type in CoffeeParameter is not supported.");
@@ -53,8 +53,6 @@ class CoffeeParameter {
     if (type == bool && defaultValue == null) {
       _defaultValue = false;
     }
-
-    value = defaultValue;
   }
 
   String getQuestion() {
@@ -74,34 +72,30 @@ class CoffeeParameter {
   }
 }
 
-class CoffeeStringParameter extends CoffeeParameter {
+class CoffeeStringParameter extends CoffeeParameter<String> {
   CoffeeStringParameter(String name,
-      {bool isOptional: false,
-      String question,
-      dynamic defaultValue,
-      String help: "",
-      List<dynamic> allowed})
-      : super(name, String,
-            isOptional: isOptional, question: question, defaultValue: defaultValue, allowed: allowed, description: help);
+      {bool isOptional: false, String question, dynamic defaultValue, String help: "", List<dynamic> allowed})
+      : super(name,
+            isOptional: isOptional,
+            question: question,
+            defaultValue: defaultValue,
+            allowed: allowed,
+            help: help);
 }
 
-class CoffeeBoolParameter extends CoffeeParameter {
+class CoffeeBoolParameter extends CoffeeParameter<bool> {
   CoffeeBoolParameter(String name,
-      {bool isOptional: false,
-      String question,
-      dynamic defaultValue,
-      String help: "",
-      List<dynamic> allowed})
-      : super(name, bool, isOptional: isOptional, question: question, defaultValue: defaultValue, description: help);
+      {bool isOptional: false, String question, dynamic defaultValue, String help: "", List<dynamic> allowed})
+      : super(name, isOptional: isOptional, question: question, defaultValue: defaultValue, help: help);
 }
 
-class CoffeeNumberParameter extends CoffeeParameter {
+class CoffeeNumberParameter extends CoffeeParameter<num> {
   CoffeeNumberParameter(String name,
-      {bool isOptional: false,
-      String question,
-      dynamic defaultValue,
-      String help: "",
-      List<dynamic> allowed})
-      : super(name, num,
-            isOptional: isOptional, question: question, defaultValue: defaultValue, allowed: allowed, description: help);
+      {bool isOptional: false, String question, dynamic defaultValue, String help: "", List<dynamic> allowed})
+      : super(name,
+            isOptional: isOptional,
+            question: question,
+            defaultValue: defaultValue,
+            allowed: allowed,
+            help: help);
 }

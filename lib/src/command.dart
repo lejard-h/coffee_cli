@@ -4,7 +4,7 @@ import "cli.dart";
 import "parameter.dart";
 import "exception.dart";
 
-typedef int executeCommand(Map<String, CoffeeParameter> parameters);
+typedef executeCommand(Map<String, CoffeeParameter> parameters);
 
 class CoffeeCommand extends CoffeeCli {
   final String name;
@@ -13,26 +13,26 @@ class CoffeeCommand extends CoffeeCli {
   final List<CoffeeParameter> parameters;
 
   CoffeeCommand(this.name, this.executable,
-      {this.parameters: const [], this.description: "", List<CoffeeCommand> commands: const []})
-      : super(commands) {
+      {this.parameters: const [], this.description: "", List<CoffeeCommand> commands: const []}) {
+    this.commands = commands;
     if (executable == null && (commands == null || commands.isEmpty)) {
       throw new CoffeeException("command need to be defined.");
     }
     for (CoffeeParameter param in parameters) {
       if (param.type != bool) {
-        parser.addOption(param.name, help: param.description);
+        parser.addOption(param.name, help: param.help);
       } else {
-        parser.addFlag(param.name, negatable: true, help: param.description);
+        parser.addFlag(param.name, negatable: true, help: param.help);
       }
     }
   }
 
   String _parseValue(String value, CoffeeParameter parameter) {
     value = value.split("\n")[0];
-    if (value.isEmpty && !parameter.isOptional) {
+    if (value.isEmpty && !parameter.isOptional && parameter.defaultValue == null) {
       stderr.writeln(outputRed("Error: Missing value for '${parameter.name}' parameter."));
       return null;
-    } else if (value.isEmpty && parameter.isOptional) {
+    } else if (value.isEmpty && (parameter.isOptional || parameter.defaultValue != null)) {
       value = parameter.defaultValue;
     }
     if (parameter.allowed != null && !parameter.allowed.contains(value)) {
@@ -83,6 +83,7 @@ class CoffeeCommand extends CoffeeCli {
         value = null;
       }
     }
+    stdout.writeln(outputGray("Launching ", level: 0.5) + outputGray("$name $value") + outputGray(" command...", level: 0.5));
     return [value]..addAll(args);
   }
 
@@ -118,7 +119,7 @@ class CoffeeCommand extends CoffeeCli {
         return executable(params);
       }
     } on FormatException catch (_) {
-      //printUsage();
+      printUsage();
     } catch (_, stacktrace) {
       print(_);
       print(stacktrace);

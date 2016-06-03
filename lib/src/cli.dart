@@ -30,15 +30,26 @@ String outputGray(String msg, {level: 1.0}) {
 
 
 class CoffeeCli {
+  ArgParser parser;
 
-  final List<CoffeeCommand> commands;
-  final ArgParser parser;
-
-  CoffeeCli(this.commands) : parser = new ArgParser() {
+  List<CoffeeCommand> _commands;
+  List<CoffeeCommand> get commands => _commands;
+  void set commands(List<CoffeeCommand> cmds) {
+    parser = new ArgParser();
+    _commands = cmds;
     for (CoffeeCommand cmd in commands) {
       parser.addCommand(cmd.name, cmd.parser);
     }
     parser.addFlag("help", abbr: "h", help: "Print Usage", negatable: false);
+  }
+
+  void addCommand(CoffeeCommand cmd) {
+    if (_commands == null) {
+      commands = [cmd];
+    } else {
+      commands.add(cmd);
+      parser.addCommand(cmd.name, cmd.parser);
+    }
   }
 
   printUsage() {
@@ -47,7 +58,6 @@ class CoffeeCli {
       cmd.printUsage();
     }
   }
-
 
   int execute(List<String> args) {
     try {
@@ -67,7 +77,7 @@ class CoffeeCli {
       printUsage();
     } catch (_, stacktrace) {
       print(_);
-      //print(stacktrace);
+      print(stacktrace);
     }
     return 1;
   }

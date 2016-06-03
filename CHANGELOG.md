@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.1
+
+* Fix various bugs
+
 ## 0.2.0
 
 ###Breaking Change

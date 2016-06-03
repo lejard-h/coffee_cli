@@ -27,22 +27,19 @@ int helloworld(Map<String, CoffeeParameter> params) {
 }
 
 CoffeeCommand get helloCommandWho => new CoffeeCommand("who", helloworld, parameters: [
-  new CoffeeStringParameter("name",  help: "Use you name", question: "What is your Name ?"),
-  new CoffeeBoolParameter("uppercase", help: "Big Hello World", question: "Do you want to use uppercase ?", defaultValue: false),
-  new CoffeeStringParameter("style",
-      help: "Style",
-      question: "What kind of style ?",
-      allowed: ["CamelCase", "snake_case"])
-]);
+      new CoffeeStringParameter("name", help: "Use you name", question: "What is your Name ?", defaultValue: 'World'),
+      new CoffeeBoolParameter("uppercase",
+          help: "Big Hello World", question: "Do you want to use uppercase ?", defaultValue: false),
+      new CoffeeStringParameter("style",
+          help: "Style", question: "What kind of style ?", allowed: ["CamelCase", "snake_case"])
+    ]);
 
-CoffeeCommand get helloWorldCommand =>  new CoffeeCommand("world", helloworld);
+CoffeeCommand get helloWorldCommand => new CoffeeCommand("world", helloworld);
 
-
-CoffeeCommand get helloCommand => new  CoffeeCommand("hello", null, commands: [
-  helloWorldCommand,
-  helloCommandWho
-]);
+CoffeeCommand get helloCommand => new CoffeeCommand("hello", null, commands: [helloWorldCommand, helloCommandWho]);
 
 main(List<String> args) {
-  return new CoffeeCli([ helloCommand]).execute(args);
+  return new CoffeeCli()
+    ..addCommand(helloCommand)
+    ..execute(args);
 }
