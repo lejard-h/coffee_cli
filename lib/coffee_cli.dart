@@ -3,9 +3,10 @@
 
 library coffee_cli;
 
-export "src/cli.dart";
-export "src/command.dart";
-export "src/parameter.dart";
+export "src/utils.dart";
+export "src/coffee.dart";
 export "src/exception.dart";
-
-
+export 'src/execute.dart';
+export 'src/question.dart';
+export 'src/command.dart';
+export 'src/parameter.dart';

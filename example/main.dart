@@ -1,45 +1,54 @@
 // Copyright (c) 2016, <your name>. All rights reserved. Use of this source code
-// is governed by a BSD-style license that can be found in the LICENSE file.
 
+// is governed by a BSD-style license that can be found in the LICENSE file.
 import 'package:coffee_cli/coffee_cli.dart';
 
-int helloworld(Map<String, CoffeeParameter> params) {
-  String hello;
-  if (params.containsKey("name")) {
-    hello = "Hello ${params["name"].value} !";
-  } else {
-    hello = "Hello World !";
+class PolymerElementGenerator extends CoffeeCli {
+  static const _cliHelp = "Polyce element, create and manage Polymer Elements.";
+  static const _nameHelp = "Name of your element";
+  static const _outputHelp = "Where would you like to create this element";
+  static const _autonotifyHelp = "Whould you like to use polymer_autonotify";
+
+  static CoffeeQuestion _questionOutputElement(CoffeeQuestion original) {
+    return new CoffeeQuestion(_outputHelp, defaultValue: "./");
   }
-  if (params.containsKey("style")) {
-    if (params["style"].value == "CamelCase") {
-      hello = hello.split(" ").join("");
-    }
-    if (params["style"].value == "snake_case") {
-      hello = hello.replaceAll(" ", "_");
-    }
+
+  @CoffeeCommand()
+  void create(@CoffeeParameter(help: _nameHelp, question: _nameHelp) String name,
+      {@CoffeeParameter(help: _outputHelp, defineQuestion: _questionOutputElement) String output,
+      @CoffeeParameter(help: _outputHelp, question: _autonotifyHelp) bool autonotify: true}) {
+    print(name);
   }
-  if (params.containsKey("uppercase") && params["uppercase"].value) {
-    print(hello.toUpperCase());
-  } else {
-    print(hello);
+
+  @override
+  usage() {
+    print(outputGray(_cliHelp, level: 0.5));
+    super.usage();
   }
-  return 0;
 }
 
-CoffeeCommand get helloCommandWho => new CoffeeCommand("who", helloworld, parameters: [
-      new CoffeeStringParameter("name", help: "Use you name", question: "What is your Name ?", defaultValue: 'World'),
-      new CoffeeBoolParameter("uppercase",
-          help: "Big Hello World", question: "Do you want to use uppercase ?", defaultValue: false),
-      new CoffeeStringParameter("style",
-          help: "Style", question: "What kind of style ?", allowed: ["CamelCase", "snake_case"])
-    ]);
+class PolyceCli extends CoffeeCli {
+  @CoffeeCommand(help: "Element command usage")
+  CoffeeCli element = new PolymerElementGenerator();
 
-CoffeeCommand get helloWorldCommand => new CoffeeCommand("world", helloworld);
+  @CoffeeCommand(help: "Init command usage")
+  void init() {}
 
-CoffeeCommand get helloCommand => new CoffeeCommand("hello", null, commands: [helloWorldCommand, helloCommandWho]);
+  @CoffeeCommand(help: "Toto command usage")
+  void toto(@CoffeeParameter(allowed: const ["truc", "titi", "tata"]) String test) {}
+
+  @override
+  usage() {
+    print(outputGray("Polyce cli, create and manage Polymer Dart Application.", level: 0.5));
+    super.usage();
+  }
+}
+
+testFunction(String value, @CoffeeParameter(defaultValue: 42.42) double otherValue) {
+  print(value);
+  print(otherValue);
+}
 
 main(List<String> args) {
-  return new CoffeeCli()
-    ..addCommand(helloCommand)
-    ..execute(args);
+  return new PolyceCli().execute(args);
 }

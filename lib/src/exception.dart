@@ -5,4 +5,3 @@ class CoffeeException implements Exception {
 
   String toString() => "CoffeeCliException: $message";
 }
-

@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.3.0
+- When allowed is provide in a parameter, the cli provide an interactive chooser of available parameter
+
+###Breaking Change
+- Construction of the cli has no change, you can now:
+    * create a class extending `CoffeeCli` and annotate you function
+    * instanciate `CoffeeCli` and use `addCommand`
+
+see [README](https://github.com/lejard-h/coffee_cli/blob/master/README.md)
+
+
 ## 0.2.1
 
 * Fix various bugs
