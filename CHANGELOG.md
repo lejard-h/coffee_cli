@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.3.1
+
+- Better usage
+- Fix some bug on questions
+
 ## 0.3.0
 - When allowed is provide in a parameter, the cli provide an interactive chooser of available parameter
 

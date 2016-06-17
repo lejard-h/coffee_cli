@@ -203,6 +203,8 @@ class CoffeeCli {
         addSubCommand(getSymbolName(d.simpleName), mirror.reflect(this).getField(d.simpleName).reflectee);
       }
     });
+
+    parser.addFlag("help", abbr: "h");
   }
 
   _addCommand(String name, CoffeeCommand cmd, mirror.ClosureMirror func) {
@@ -238,12 +240,20 @@ class CoffeeCli {
 
   usage() {
     _subCommands.forEach((String name, CoffeeCli cli) {
-      stdout.writeln("\t${outputBlue(name)}\t\t${cli.help == null ? "" : '${cli.help}\n\t\t'}");
+      stdout.writeln("\t${outputBlue(name)}${cli.help == null ? "" : '\t\t${cli.help}'}");
     });
+    if (_subCommands.isNotEmpty && _commands.isNotEmpty) {
+      print("");
+    }
     _commands.forEach((String name, _CoffeeCommand cmd) {
-      stdout.writeln(
-          "\t${outputBlue(name)}\t\t${cmd.help == null ? "" : '${cmd.help}'}\n\t\t${cmd.options.keys.map((String n) =>
-							cmd.options[n].usage(n)).join("\n\t\t")}");
+      stdout.write("\t${outputBlue(name)}");
+      if (cmd.help != null) {
+        stdout.write("\t\t${cmd.help}");
+      }
+      stdout.writeln("");
+      for (String p in cmd.options.keys) {
+        stdout.writeln("\t\t\t\t${cmd.options[p].usage(p)}");
+      }
     });
   }
 
@@ -251,7 +261,9 @@ class CoffeeCli {
     try {
       ArgResults results = parser.parse(args);
 
-      if (results.command != null) {
+      if (results["help"]) {
+        return usage();
+      } else if (results.command != null) {
         if (_commands.containsKey(results.command.name)) {
           return executeCommand(results.command.name, results.command.arguments);
         } else if (_subCommands.containsKey(results.command.name)) {
@@ -259,16 +271,16 @@ class CoffeeCli {
         }
       } else if (_commands.isNotEmpty) {
         List allowed = _commands.keys.toList();
-				MultiChoiceAsker asker = new MultiChoiceAsker("Available commands", allowed);
-				String result = await asker.ask();
+        MultiChoiceAsker asker = new MultiChoiceAsker("Available commands", allowed);
+        String result = await asker.ask();
         stdout.writeln("${outputGray("You choose the command =>", level: 0.5)} ${outputBlue(result)}");
-				return executeCommand(result, []);
+        return executeCommand(result, []);
       } else {
-        usage();
+        return usage();
       }
     } on FormatException catch (e) {
       stderr.writeln(outputRed(e.message));
-      usage();
+      return usage();
     } catch (_, stacktrace) {
       print(_);
       print(stacktrace);
@@ -276,4 +288,3 @@ class CoffeeCli {
     return 1;
   }
 }
-

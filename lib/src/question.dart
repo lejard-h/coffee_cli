@@ -57,19 +57,19 @@ class MultiChoiceAsker {
 class CoffeeAsker<T> {
   Type get type => T;
   T value;
-  T _defaultValue;
-  final List<T> allowed;
   CoffeeQuestion question;
 
-  CoffeeAsker(String question, {T defaultValue, this.allowed}) {
-    _defaultValue = defaultValue;
-    String _default = _defaultValue?.toString();
+  T defaultValue;
+  List<T> allowed;
+
+  CoffeeAsker(String question, {this.defaultValue, this.allowed}) {
+    String _default = defaultValue?.toString();
     if (T == bool) {
-      if (_defaultValue == true) {
+      if (defaultValue == true) {
         _default = "Y/n";
       } else {
         _default = "y/N";
-        _defaultValue = false as T;
+        defaultValue = false as T;
       }
     }
     this.question = new CoffeeQuestion(question, defaultValue: _default, allowed: T == bool ? null : allowed);
@@ -78,7 +78,7 @@ class CoffeeAsker<T> {
   Future<T> ask() async {
     String _value = await question.ask();
     if (_value.isEmpty) {
-      value = _defaultValue;
+      value = defaultValue;
     } else {
       if (T == bool) {
         if (_value.toLowerCase() == "true" || _value.toLowerCase() == "y") {
